@@ -1,0 +1,145 @@
+---
+objects:
+  - endpoint: DADict
+---
+mandatory: True
+question: Welcome to the Form 1 application!
+subquestion: |
+  This application will automatically fill out out Form 1. 
+
+  Disclaimer: This form should be checked by a lawyer before submission.
+
+  To get started, press **Continue**.
+  To exit, press **exit**
+buttons:
+  - Continue: continue
+  - Exit: exit
+    url: https://courts.sa.gov.au
+---
+mandatory: True
+code: |
+  if LWGCourt_type == 'Supreme Court':
+    endpoint['eligible']
+  else:
+    endpoint['ineligible']
+---
+question: Which Court does your form need to be completed for?
+field: LWGCourt_type
+dropdown:
+  - Magistrates Court
+  - District Court
+  - Supreme Court
+  - Federal Circuit Court
+  - Federal Court
+---
+event: endpoint['ineligible']
+question: Wrong Court Type
+subquestion: |
+  This form type does not apply to your Court type  You cannot use
+  this service.
+buttons:
+  - Exit: exit
+    url: https://courts.sa.gov.au
+  - Restart: restart
+---
+event: endpoint['eligible']
+question: Form 1 Document
+subquestion: |
+  ### Your Form 1 Information
+  
+  Thanks for completing the Form 1 Survey.
+  We have collected this data from you:
+  
+  Information|Your Input
+  -----------|-----------
+  Document Type          | ${ LWGdocumenttype }
+  Role of First Party    | ${ LWG1roleofparty }
+  First Party Name       | ${ LWG1name }
+  First Party Address    | ${ LWG1address }
+  First Party Telephone  | ${ LWG1telephone }
+  First Party Mobile     | ${ LWG1mobile }
+  First Party Facsimile  | ${ LWG1fax }
+  First Party Email      | ${ LWG1email }
+  First Party L Code     | ${ LWG1lcode }
+  First Party P Code     | ${ LWG1pcode }
+  Role of Second Party   | ${ LWG2roleofparty }
+  Second Party Name      | ${ LWG2name }
+attachment:
+  docx template file: Ex1e._Form_1_-_Front_Sheet_-_LWG.docx
+buttons:
+  - I'm done: exit
+    url: https://courts.sa.gov.au
+  - Do it again: restart
+---
+question: Please identify your document type 
+subquestion: |
+  eg summons, third party notice, notice of appeal, etc.
+fields: 
+  - Document Type: LWGdocumenttype
+---
+question: Please select the role of the first party
+field: LWG1roleofparty
+choices:
+  - Plaintiff
+  - Appellant
+  - Applicant
+---
+question: Please enter the name of the First Party
+subquestion: |
+  Please enter their full name, including middle name if they have one
+fields:
+  - no label: LWG1name
+---
+mandatory:
+question: Please enter the address of the First Party
+fields:
+  - no label: LWG1address
+---
+question: Please enter the telephone number of the First Party
+fields:
+  - no label: LWG1telephone
+    datatype: integer
+    required: True
+---
+question: Please enter the mobile phone number of the First Party
+fields:
+  - no label: LWG1mobile
+    datatype: integer
+    required: False
+---
+question: Please enter the Facsimile number of the First Party
+fields:
+  - no label: LWG1fax
+    datatype: integer
+    required: False
+--- 
+question: Please enter the email address of the First Party
+fields:
+  - E-mail: LWG1email
+    datatype: email
+    required: True
+---
+question: Please enter the L Code
+fields:
+  - no label: LWG1lcode
+    required: True
+---
+question: Please enter the P Code
+fields:
+  - no label: LWG1pcode
+    required: True
+---
+question: Please select the role of the second party
+field: LWG2roleofparty
+choices:
+  - Defendant
+  - Respondent
+---
+question: Please enter the name of the Second Party
+  Please enter their full name, including middle name if they have one
+fields:
+  - no label: LWG2name
+---
+question: |
+  Today's date is ${ today() }.
+mandatory: True
